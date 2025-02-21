@@ -18,13 +18,13 @@ const textFont = Poppins({
 const page = () => {
 	return (
 		<div className="flex justify-center items-center flex-col gap-4 px-10 pt-40">
-			<div className="flex items-center gap-4 bg-slate-200 text-blue-900 p-2 px-4 shadow-lg rounded-full font-bold">
+			<div className="flex items-center gap-4  text-slate-600 p-2 px-4  font-medium border rounded-full border-black">
 				<Medal />
 				No. 1 Task Management
 			</div>
 			<div
 				className={cn(
-					"text-3xl md:text-4xl font-semibold bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-clip-text text-transparent antialiased text-center",
+					"text-3xl md:text-5xl font-semibold bg-gradient-to-r from-black via-gray-800 to-slate-500 bg-clip-text text-transparent antialiased text-center",
 					headingFont.className
 				)}
 			>
@@ -32,7 +32,7 @@ const page = () => {
 			</div>
 			<div
 				className={cn(
-					"text-slate-500 text-center md:max-w-3xl",
+					"text-slate-500 text-center md:max-w-3xl font-medium",
 					textFont.className
 				)}
 			>

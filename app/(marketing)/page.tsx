@@ -5,7 +5,6 @@ import Link from "next/link";
 import localFont from "next/font/local";
 import { cn } from "@/lib/utils";
 import { Poppins } from "next/font/google";
-import { text } from "stream/consumers";
 
 const headingFont = localFont({
 	src: "../../public/fonts/CalSans-SemiBold.ttf",
@@ -19,7 +18,12 @@ const textFont = Poppins({
 const page = () => {
 	return (
 		<div className="flex justify-center items-center flex-col gap-4 px-10 pt-40">
-			<div className={cn("flex items-center gap-4  text-slate-600 p-2 px-4  font-medium border rounded-full border-black font-medium", textFont.className)}>
+			<div
+				className={cn(
+					"flex items-center gap-4  text-slate-600 p-2 px-4 border rounded-full border-black font-medium",
+					textFont.className
+				)}
+			>
 				<Medal />
 				No. 1 Task Management
 			</div>

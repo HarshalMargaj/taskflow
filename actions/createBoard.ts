@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -32,14 +33,13 @@ export async function create(prevState: State, formData: FormData) {
 
 	const { title } = validatedFields.data;
 
-	console.log({ title });
-
 	try {
 		const newBoard = await db.boardsTable.create({
 			data: {
 				title,
 			},
 		});
+		return { message: "Board created successfully" };
 	} catch (error) {
 		console.error("Database error:", error);
 		return {

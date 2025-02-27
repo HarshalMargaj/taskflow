@@ -19,16 +19,11 @@ const CreateBoard = z.object({
 });
 
 export async function create(prevState: State, formData: FormData) {
-	console.log("FormData received:", formData.get("title"));
-
 	const validatedFields = CreateBoard.safeParse({
 		title: formData.get("title"),
 	});
 
-	console.log("Validation result:", validatedFields);
-
 	if (!validatedFields.success) {
-		console.log("Validation failed:", validatedFields.error.flatten());
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: "Missing fields",
@@ -37,13 +32,14 @@ export async function create(prevState: State, formData: FormData) {
 
 	const { title } = validatedFields.data;
 
+	console.log({ title });
+
 	try {
 		const newBoard = await db.boardsTable.create({
 			data: {
 				title,
 			},
 		});
-		console.log("Board successfully created:", newBoard);
 	} catch (error) {
 		console.error("Database error:", error);
 		return {

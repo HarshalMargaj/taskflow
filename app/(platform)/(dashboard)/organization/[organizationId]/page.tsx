@@ -1,4 +1,4 @@
-"use client";
+import { Suspense } from "react";
 import { BoardList } from "./_components/board-list";
 import { Info } from "./_components/info";
 import { Separator } from "@/components/ui/separator";
@@ -9,7 +9,9 @@ const OrganizationPage = () => {
 			<Info />
 			<Separator className="my-4" />
 			<div className="px-2 md:px-4">
-				<BoardList />
+				<Suspense fallback={<BoardList.Skeleton />}>
+					<BoardList />
+				</Suspense>
 			</div>
 		</div>
 	);

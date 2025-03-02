@@ -1,7 +1,7 @@
 "use client";
 
 import { List } from "@prisma/client";
-import { useActionState, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FormInput } from "@/components/form/form-input";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { updateList } from "@/actions/updateList";
@@ -12,8 +12,6 @@ interface ListHeaderProps {
 }
 
 export const ListHeader = ({ data }: ListHeaderProps) => {
-	// const initialState = { message: null, errors: {} };
-	// const [state, dispatch] = useActionState(updateList, initialState);
 	const [title, setTitle] = useState(data.title);
 	const [isEditing, setIsEditing] = useState(false);
 	const formRef = useRef<HTMLFormElement>(null);

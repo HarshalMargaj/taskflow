@@ -6,16 +6,17 @@ import { BoardNavbar } from "./_components/board-navbar";
 export async function generateMetadata({
 	params,
 }: {
-	params: { boardId: string };
+	params: Promise<{ boardId: string }>;
 }) {
 	const { orgId } = await auth();
+	const { boardId } = await params;
 	if (!orgId) {
 		return { title: "Board" };
 	}
 
 	const board = await db.boardsTable.findUnique({
 		where: {
-			id: params.boardId,
+			id: boardId,
 			orgId,
 		},
 	});
@@ -30,9 +31,10 @@ const BoardIdLayout = async ({
 	params,
 }: {
 	children: React.ReactNode;
-	params: { boardId: string };
+	params: Promise<{ boardId: string }>;
 }) => {
 	const { orgId } = await auth();
+	const { boardId } = await params;
 
 	if (!orgId) {
 		return redirect("/select-org");
@@ -40,7 +42,7 @@ const BoardIdLayout = async ({
 
 	const board = await db.boardsTable.findUnique({
 		where: {
-			id: params.boardId,
+			id: boardId,
 			orgId,
 		},
 	});

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { List } from "@prisma/client";
 import {
 	Popover,
@@ -12,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { FormSubmit } from "@/components/form/form-submit";
 import { Separator } from "@/components/ui/separator";
 import { deleteList } from "@/actions/deleteList";
+import { toast } from "sonner";
+import { copyList } from "@/actions/copyList";
 
 interface ListOptionsProps {
 	data: List;
@@ -19,11 +22,19 @@ interface ListOptionsProps {
 }
 
 export const ListOptions = ({ data, onAddCard }: ListOptionsProps) => {
-	const delList = (formData: FormData) => {
+	const closeRef = useRef<HTMLButtonElement>(null);
+
+	const onDelete = (formData: FormData) => {
 		const id = formData.get("id") as string;
 		const boardId = formData.get("boardId") as string;
 
 		deleteList(id, boardId);
+		closeRef.current?.click();
+		toast.success("List Deleted successfully");
+	};
+
+	const onCopy = (formData: FormData) => {
+		copyList(formData);
 	};
 
 	return (
@@ -40,7 +51,7 @@ export const ListOptions = ({ data, onAddCard }: ListOptionsProps) => {
 				<div className="text-sm font-medium text-neutral-700 text-center pb-4">
 					List Options
 				</div>
-				<PopoverClose asChild>
+				<PopoverClose ref={closeRef} asChild>
 					<Button
 						variant="ghost"
 						className="absolute right-2 top-2 w-auto h-auto text-neutral-700"
@@ -55,7 +66,7 @@ export const ListOptions = ({ data, onAddCard }: ListOptionsProps) => {
 				>
 					Add Card
 				</Button>
-				<form action="">
+				<form action={onCopy}>
 					<input hidden id="id" name="id" value={data.id} />
 					<input
 						hidden
@@ -71,7 +82,7 @@ export const ListOptions = ({ data, onAddCard }: ListOptionsProps) => {
 					</FormSubmit>
 				</form>
 				<Separator />
-				<form action={delList}>
+				<form action={onDelete}>
 					<input hidden id="id" name="id" value={data.id} />
 					<input
 						hidden

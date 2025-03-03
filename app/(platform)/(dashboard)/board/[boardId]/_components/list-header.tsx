@@ -6,6 +6,7 @@ import { FormInput } from "@/components/form/form-input";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { updateList } from "@/actions/updateList";
 import { toast } from "sonner";
+import { ListOptions } from "./list-options";
 
 interface ListHeaderProps {
 	data: List;
@@ -16,7 +17,6 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const formRef = useRef<HTMLFormElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const [error, setError] = useState<string>();
 
 	const enableEditing = () => {
 		setIsEditing(true);
@@ -67,7 +67,7 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
 	useOnClickOutside(formRef, disableEditing);
 
 	return (
-		<div className="flex items-start justify-between pt-2 px-2 font-semibold gap-x-2 text-sm">
+		<div className="flex items-center justify-between pt-2 px-2 font-semibold gap-x-2 text-sm">
 			{isEditing ? (
 				<form ref={formRef} action={onSubmit} className="w-full">
 					<input hidden id="id" name="id" value={data.id} />
@@ -95,6 +95,7 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
 					{title}
 				</div>
 			)}
+			<ListOptions data={data} onAddCard={() => {}} />
 		</div>
 	);
 };

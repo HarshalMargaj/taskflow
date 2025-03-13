@@ -1,12 +1,11 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { FormInput } from "@/components/form/form-input";
 import { CardWithLists } from "@/types";
 import { Layout } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { updateCard } from "@/actions/updateCard";
 import { toast } from "sonner";
@@ -35,7 +34,7 @@ export const Header = ({ data }: HeaderProps) => {
 	};
 
 	return (
-		<div className="flex gap-x-3 mb-6 w-full">
+		<div className="flex items-start gap-x-3 mb-6 w-full">
 			<Layout className="w-5 h-5 mt-1 text-neutral-700" />
 			<div className="w-full">
 				<form action={onSubmit}>
@@ -57,7 +56,7 @@ export const Header = ({ data }: HeaderProps) => {
 
 Header.Skeleton = function HeaderSkeleton() {
 	return (
-		<div className="flex gap-x-3 mb-6">
+		<div className="flex items-start gap-x-3 mb-6">
 			<Skeleton className="w-6 h-6 mt-1 bg-neutral-200" />
 			<div>
 				<Skeleton className="w-24 h-6 mb-1 bg-neutral-200" />

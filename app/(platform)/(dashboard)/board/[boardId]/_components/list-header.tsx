@@ -57,6 +57,7 @@ export const ListHeader = ({ data, onAddCard }: ListHeaderProps) => {
 		try {
 			updateList(formData);
 			setTitle(title);
+			toast.success("List updated successfully");
 			disableEditing();
 		} catch (error) {
 			toast.error("Something went wrong. Please try again.");

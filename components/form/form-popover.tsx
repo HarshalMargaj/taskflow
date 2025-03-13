@@ -40,7 +40,9 @@ export const FormPopover = ({
 	const router = useRouter();
 
 	useEffect(() => {
-		if (state?.message === "Board created successfully") {
+		if (!state?.message) return; // Prevents empty toast on reload
+
+		if (state.message === "Board created successfully") {
 			toast.success("Board Created!");
 			// closing popover on create
 			closeRef?.current?.click();
@@ -48,16 +50,9 @@ export const FormPopover = ({
 				router.push(`/board/${state.boardId}`);
 			}
 		} else {
-			toast.success(state?.message);
+			toast.success(state.message);
 		}
-	}, [state.message]);
-
-	const onSubmit = (formData: FormData) => {
-		const title = formData.get("title");
-		const image = formData.get("image");
-		console.log(title);
-		console.log(image);
-	};
+	}, [state?.message]);
 
 	return (
 		<Popover>

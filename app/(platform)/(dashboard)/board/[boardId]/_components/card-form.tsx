@@ -26,7 +26,6 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
 		const formRef = useRef<HTMLFormElement>(null);
 		const params = useParams();
 		const boardId = params.boardId;
-		console.log(boardId);
 		const initialState = { message: null, errors: {} };
 		const [state, dispatch] = useActionState(createCard, initialState);
 

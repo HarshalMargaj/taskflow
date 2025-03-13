@@ -8,10 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Header } from "./header";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Description } from "./description";
+import { Actions } from "./actions";
 
 export const CardModal = () => {
 	const id = useCardModal(state => state.id);
-	console.log("card id", id);
 	const isOpen = useCardModal(state => state.isOpen);
 	const onClose = useCardModal(state => state.onClose);
 	const { data: cardData } = useQuery<CardWithLists>({
@@ -26,7 +26,7 @@ export const CardModal = () => {
 					<DialogTitle>Card Details</DialogTitle>
 				</VisuallyHidden>
 				{!cardData ? <Header.Skeleton /> : <Header data={cardData} />}
-				<div className="gird grid-cols-1 md:grid-cols-4 md:gap-4">
+				<div className="grid grid-cols-1 md:grid-cols-4 md:gap-4">
 					<div className="col-span-3">
 						<div className="w-full space-y-6">
 							{!cardData ? (
@@ -36,6 +36,11 @@ export const CardModal = () => {
 							)}
 						</div>
 					</div>
+					{!cardData ? (
+						<Actions.Skeleton />
+					) : (
+						<Actions data={cardData} />
+					)}
 				</div>
 			</DialogContent>
 		</Dialog>

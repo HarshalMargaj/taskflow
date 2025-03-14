@@ -20,6 +20,7 @@ import { FormPicker } from "./form-picker";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 interface FormPopoverProps {
 	children: React.ReactNode;
@@ -38,6 +39,7 @@ export const FormPopover = ({
 	const initialState = { message: null, errors: {} };
 	const [state, dispatch] = useActionState(create, initialState);
 	const router = useRouter();
+	const proModal = useProModal();
 
 	useEffect(() => {
 		if (!state?.message) return; // Prevents empty toast on reload
@@ -49,6 +51,12 @@ export const FormPopover = ({
 			if (state.boardId) {
 				router.push(`/board/${state.boardId}`);
 			}
+		} else if (
+			state.message ===
+			"You have reached the maximum number of boards for this organization"
+		) {
+			toast.success(state.message);
+			proModal.onOpen();
 		} else {
 			toast.success(state.message);
 		}

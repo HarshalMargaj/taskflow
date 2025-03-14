@@ -7,6 +7,8 @@ import { db } from "@/lib/db";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { createAuditLog } from "@/lib/create-audit-log";
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
+import { incrementAvailableCount, hasAvailableCount } from "@/lib/org-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 export type State = {
 	errors?: {
@@ -37,7 +39,15 @@ export async function create(prevState: State, formData: FormData) {
 		return { message: "No organization selected" };
 	}
 
-	console.log("Selected Organization ID:", orgId);
+	const canCreate = await hasAvailableCount();
+	const isPro = await checkSubscription();
+
+	if (!canCreate && !isPro) {
+		return {
+			message:
+				"You have reached the maximum number of boards for this organization",
+		};
+	}
 
 	const validatedFields = CreateBoard.safeParse({
 		title: formData.get("title"),
@@ -52,7 +62,6 @@ export async function create(prevState: State, formData: FormData) {
 	}
 
 	const { title, image } = validatedFields.data;
-	console.log(image);
 
 	const [imageId, imageThumbUrl, imageFullUrl, imageLinkHtml, imageUserName] =
 		image.split("|");
@@ -81,6 +90,10 @@ export async function create(prevState: State, formData: FormData) {
 				imageUserName,
 			},
 		});
+
+		if (!isPro) {
+			await incrementAvailableCount();
+		}
 
 		await createAuditLog({
 			entityId: newBoard.id,

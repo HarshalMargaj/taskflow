@@ -23,8 +23,6 @@ export const ActivityList = async () => {
 		},
 	});
 
-	console.log(auditLogs);
-
 	return (
 		<div className="space-y-4 max-h-[calc(100vh-11rem)] overflow-y-auto scrollbar-hide">
 			<p className="hidden last:block text-xs text-center text-muted-foreground">

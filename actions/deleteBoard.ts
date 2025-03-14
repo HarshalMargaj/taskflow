@@ -2,6 +2,7 @@
 
 import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { decrementAvailableCount } from "@/lib/org-limit";
 import { auth } from "@clerk/nextjs/server";
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -15,6 +16,8 @@ export async function deleteBoard(id: string) {
 			id,
 		},
 	});
+
+	await decrementAvailableCount();
 
 	await createAuditLog({
 		entityId: board.id,

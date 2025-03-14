@@ -1,6 +1,6 @@
 import { OrganizationList } from "@clerk/nextjs";
 
-export default function () {
+export default function SelectOrgPage() {
 	return (
 		<div>
 			<OrganizationList

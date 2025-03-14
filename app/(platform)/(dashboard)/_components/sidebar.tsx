@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { useLocalStorage } from "usehooks-ts";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ storageKeys = "t-sidebar-state" }: SidebarProps) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [expanded, setExpanded] = useLocalStorage<Record<string, any>>(
 		storageKeys,
 		{}

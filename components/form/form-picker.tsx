@@ -14,8 +14,9 @@ interface FormPickerProps {
 	errors: Record<string, string[] | undefined>;
 }
 
-export const FormPicker = ({ id, errors }: FormPickerProps) => {
+export const FormPicker = ({ id }: FormPickerProps) => {
 	const { pending } = useFormStatus();
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [images, setImages] =
 		useState<Array<Record<string, any>>>(defaultImages);
 	console.log(images);
@@ -31,6 +32,7 @@ export const FormPicker = ({ id, errors }: FormPickerProps) => {
 				});
 
 				if (result && result.response) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					const newImages = result.response as Array<
 						Record<string, any>
 					>;

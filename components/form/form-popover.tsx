@@ -41,6 +41,7 @@ export const FormPopover = ({
 	const router = useRouter();
 	const proModal = useProModal();
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		if (!state?.message) return; // Prevents empty toast on reload
 

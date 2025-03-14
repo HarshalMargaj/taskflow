@@ -1,5 +1,4 @@
 import Stripe from "stripe";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 
@@ -18,6 +17,7 @@ export async function POST(req: Request) {
 			process.env.STRIPE_WEBHOOK_SECRET!
 		);
 	} catch (error) {
+		console.error("Stripe webhook error:", error);
 		return new NextResponse("webhook error", { status: 400 });
 	}
 

@@ -8,21 +8,22 @@ import { update } from "@/actions/updateBoard";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface BoardTitleFormProps {
 	data: Record<string, any>;
 }
 
 export const BoardTitleForm = ({ data }: BoardTitleFormProps) => {
 	const params = useParams();
-	const boardId = params.boardId as string;
 	const [isEditing, setIsEditing] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const formRef = useRef<HTMLFormElement>(null);
 	const [error, setError] = useState<string>();
+	const [title, setTitle] = useState(data.title);
+	const boardId = params.boardId as string;
 	const disableEditing = () => {
 		setIsEditing(false);
 	};
-	const [title, setTitle] = useState(data.title);
 
 	const enableEditing = () => {
 		setIsEditing(true);

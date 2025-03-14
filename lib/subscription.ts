@@ -26,7 +26,7 @@ export const checkSubscription = async () => {
 	if (!orgSubscription) {
 		return false;
 	}
-
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const isValid =
 		orgSubscription.stripePriceId &&
 		orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAYS_IN_MS >

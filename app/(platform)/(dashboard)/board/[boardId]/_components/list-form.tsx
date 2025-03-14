@@ -14,8 +14,6 @@ import { useParams } from "next/navigation";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { createList } from "@/actions/createList";
 
-interface ListFormProps {}
-
 export const ListForm = () => {
 	const initialState = { message: null, errors: {} };
 	const [state, dispatch] = useActionState(createList, initialState);

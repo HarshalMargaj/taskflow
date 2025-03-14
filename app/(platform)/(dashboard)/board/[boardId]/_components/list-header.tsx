@@ -60,6 +60,7 @@ export const ListHeader = ({ data, onAddCard }: ListHeaderProps) => {
 			toast.success("List updated successfully");
 			disableEditing();
 		} catch (error) {
+			console.error("Update list error:", error);
 			toast.error("Something went wrong. Please try again.");
 		}
 	};

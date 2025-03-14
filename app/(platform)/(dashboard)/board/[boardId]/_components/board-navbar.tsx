@@ -1,5 +1,7 @@
 import { BoardTitleForm } from "./board-title-form";
 import { BoardOptions } from "./board-options";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface BoardNavbarProps {
 	data: Record<string, any>;
 }

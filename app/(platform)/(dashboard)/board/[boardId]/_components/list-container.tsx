@@ -27,7 +27,7 @@ export const ListContainer = ({ data, boardId }: ListContainerProps) => {
 	useEffect(() => {
 		setOrderedData(data);
 	}, [data]);
-
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const onDragEnd = (result: any) => {
 		const { destination, source, type } = result;
 
@@ -62,7 +62,7 @@ export const ListContainer = ({ data, boardId }: ListContainerProps) => {
 		}
 
 		if (type === "card") {
-			let newOrderedData = [...orderedData];
+			const newOrderedData = [...orderedData];
 
 			const sourceList = newOrderedData.find(
 				list => list.id === source.droppableId

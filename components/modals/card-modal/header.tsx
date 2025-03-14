@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "next/navigation";
 import { updateCard } from "@/actions/updateCard";
 import { toast } from "sonner";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface HeaderProps {
 	data: CardWithLists;

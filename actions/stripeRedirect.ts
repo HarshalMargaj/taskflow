@@ -1,13 +1,11 @@
 "use server";
 
-import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
 import { revalidatePath } from "next/cache";
-import Stripe from "stripe";
 
 export async function stripeRedirect() {
 	const user = await currentUser();

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { CardWithLists } from "@/types";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { AlignLeft } from "lucide-react";
 
@@ -21,7 +22,7 @@ interface DescriptionProps {
 
 export const Description = ({ data }: DescriptionProps) => {
 	const params = useParams();
-
+	const queryClient = useQueryClient();
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const formRef = useRef<HTMLFormElement>(null);
 
@@ -45,15 +46,15 @@ export const Description = ({ data }: DescriptionProps) => {
 		}
 	};
 
-	const onSubmit = (formData: FormData) => {
-		console.log(formData);
-
+	const onSubmit = async (formData: FormData) => {
 		const description = formData.get("description") as string;
 		const boardId = params.boardId as string;
 		const id = data.id;
 		const title = data.title;
 
-		updateCard({ id, boardId, title, description });
+		await updateCard({ id, boardId, title, description });
+		queryClient.invalidateQueries({ queryKey: ["card", id] });
+		queryClient.invalidateQueries({ queryKey: ["auditLog", id] });
 		setDescription(description);
 		disableEditing();
 		toast.success("Description added successfully");

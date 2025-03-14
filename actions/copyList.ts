@@ -1,7 +1,9 @@
 "use server";
 
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -74,6 +76,13 @@ export async function copyList(formData: FormData) {
 			include: {
 				cards: true,
 			},
+		});
+
+		await createAuditLog({
+			entityId: list.id,
+			entityType: ENTITY_TYPE.LIST,
+			action: ACTION.CREATE,
+			entityTitle: list.title,
 		});
 	} catch (error) {
 		console.log("Failed to Copy");

@@ -5,6 +5,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export type State = {
 	errors?: {
@@ -24,7 +26,7 @@ const CreateBoard = z.object({
 });
 
 export async function create(prevState: State, formData: FormData) {
-	const { orgId } = await auth(); // Gets the actively selected organization ID
+	const { orgId } = await auth();
 	const user = await currentUser();
 
 	if (!user) {
@@ -35,7 +37,6 @@ export async function create(prevState: State, formData: FormData) {
 		return { message: "No organization selected" };
 	}
 
-	// Now, `orgId` is the one the user has currently selected in Clerk
 	console.log("Selected Organization ID:", orgId);
 
 	const validatedFields = CreateBoard.safeParse({
@@ -79,6 +80,13 @@ export async function create(prevState: State, formData: FormData) {
 				imageLinkHtml,
 				imageUserName,
 			},
+		});
+
+		await createAuditLog({
+			entityId: newBoard.id,
+			entityType: ENTITY_TYPE.BOARD,
+			action: ACTION.CREATE,
+			entityTitle: newBoard.title,
 		});
 
 		return {

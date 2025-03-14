@@ -3,9 +3,12 @@
 import { z } from "zod";
 
 import { db } from "@/lib/db";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export type State = {
 	errors?: {
@@ -52,7 +55,6 @@ export async function createCard(prevState: State, formData: FormData) {
 	let card;
 
 	try {
-		// here we check that the list is available or not
 		const list = await db.list.findUnique({
 			where: {
 				id: listId,
@@ -68,7 +70,6 @@ export async function createCard(prevState: State, formData: FormData) {
 			};
 		}
 
-		// here we are extracting the last order
 		const lastCard = await db.card.findFirst({
 			where: {
 				listId,
@@ -79,11 +80,8 @@ export async function createCard(prevState: State, formData: FormData) {
 			select: { order: true },
 		});
 
-		// here we are creating new order by adding 1 so if last order is 3 then we add 1 and it becomes 4
-
 		const newOrder = lastCard ? lastCard.order + 1 : 1;
 
-		// and here we are creating new card
 		card = await db.card.create({
 			data: {
 				title,
@@ -92,7 +90,13 @@ export async function createCard(prevState: State, formData: FormData) {
 			},
 		});
 
-		// here we are revlidating the path to refresh the page and update the changes
+		await createAuditLog({
+			entityId: card.id,
+			entityType: ENTITY_TYPE.CARD,
+			entityTitle: card.title,
+			action: ACTION.CREATE,
+		});
+
 		revalidatePath(`/board/${boardId}`);
 	} catch (error) {
 		console.error("Database error:", error);

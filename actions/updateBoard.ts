@@ -3,6 +3,8 @@
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export type State = {
 	errors?: {
@@ -45,9 +47,16 @@ export async function update({ id, title }: { id: string; title: string }) {
 	}
 
 	try {
-		await db.boardsTable.update({
+		const board = await db.boardsTable.update({
 			where: { id, orgId },
 			data: { title },
+		});
+
+		await createAuditLog({
+			entityId: board.id,
+			entityType: ENTITY_TYPE.BOARD,
+			action: ACTION.UPDATE,
+			entityTitle: board.title,
 		});
 
 		return {

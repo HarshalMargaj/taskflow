@@ -9,12 +9,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "next/navigation";
 import { updateCard } from "@/actions/updateCard";
 import { toast } from "sonner";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 interface HeaderProps {
 	data: CardWithLists;
 }
 
 export const Header = ({ data }: HeaderProps) => {
+	const queryClient = useQueryClient();
 	const params = useParams();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [title, setTitle] = useState(data.title);
@@ -23,12 +25,16 @@ export const Header = ({ data }: HeaderProps) => {
 		inputRef.current?.form?.requestSubmit();
 	};
 
-	const onSubmit = (formData: FormData) => {
+	const onSubmit = async (formData: FormData) => {
 		const id = data.id;
 		const boardId = params.boardId as string;
 		const title = formData.get("title") as string;
+		const description = data.description as string;
 
-		updateCard({ id, boardId, title });
+		await updateCard({ id, boardId, title, description });
+		queryClient.invalidateQueries({ queryKey: ["card", id] });
+		queryClient.invalidateQueries({ queryKey: ["auditLog", id] });
+
 		setTitle(title);
 		toast.success("Card updated successfully");
 	};

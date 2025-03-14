@@ -41,7 +41,7 @@ export const ListHeader = ({ data, onAddCard }: ListHeaderProps) => {
 		formRef.current?.requestSubmit();
 	};
 
-	const onSubmit = (formData: FormData) => {
+	const onSubmit = async (formData: FormData) => {
 		const title = formData.get("title") as string;
 
 		if (!title) {
@@ -55,7 +55,7 @@ export const ListHeader = ({ data, onAddCard }: ListHeaderProps) => {
 		}
 
 		try {
-			updateList(formData);
+			await updateList(formData);
 			setTitle(title);
 			toast.success("List updated successfully");
 			disableEditing();

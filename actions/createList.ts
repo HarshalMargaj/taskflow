@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export type State = {
 	errors?: {
@@ -82,6 +84,13 @@ export async function createList(prevState: State, formData: FormData) {
 				boardId,
 				order: newOrder,
 			},
+		});
+
+		await createAuditLog({
+			entityId: list.id,
+			entityType: ENTITY_TYPE.LIST,
+			action: ACTION.CREATE,
+			entityTitle: list.title,
 		});
 
 		revalidatePath(`/board/${boardId}`);

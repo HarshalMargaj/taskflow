@@ -4,6 +4,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export type State = {
 	errors?: {
@@ -43,6 +45,13 @@ export async function updateCard({
 				},
 			},
 			data: { title, description },
+		});
+
+		await createAuditLog({
+			entityId: card.id,
+			entityType: ENTITY_TYPE.CARD,
+			action: ACTION.UPDATE,
+			entityTitle: card.title,
 		});
 
 		revalidatePath(`/board/${boardId}`);

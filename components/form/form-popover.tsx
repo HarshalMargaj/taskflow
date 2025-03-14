@@ -17,7 +17,6 @@ import { FormSubmit } from "./form-submit";
 import { useActionState } from "react";
 import { toast } from "sonner";
 import { FormPicker } from "./form-picker";
-
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useProModal } from "@/hooks/use-pro-modal";
@@ -84,7 +83,7 @@ export const FormPopover = ({
 					</Button>
 				</PopoverClose>
 				<form action={dispatch} className="space-y-4">
-					<FormPicker id="image" errors={state?.errors} />
+					<FormPicker id="image" />
 					<div className="space-y-4">
 						<FormInput
 							id="title"

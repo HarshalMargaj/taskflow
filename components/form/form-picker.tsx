@@ -11,7 +11,6 @@ import Link from "next/link";
 
 interface FormPickerProps {
 	id: string;
-	errors: Record<string, string[] | undefined>;
 }
 
 export const FormPicker = ({ id }: FormPickerProps) => {
@@ -19,7 +18,7 @@ export const FormPicker = ({ id }: FormPickerProps) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [images, setImages] =
 		useState<Array<Record<string, any>>>(defaultImages);
-	console.log(images);
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [selectedImageId, setSelectedImageId] = useState(null);
 

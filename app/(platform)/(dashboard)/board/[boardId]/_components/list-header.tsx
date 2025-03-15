@@ -1,7 +1,7 @@
 "use client";
 
 import { List } from "@prisma/client";
-import { useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import { FormInput } from "@/components/form/form-input";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { updateList } from "@/actions/updateList";
@@ -67,7 +67,7 @@ export const ListHeader = ({ data, onAddCard }: ListHeaderProps) => {
 
 	useEventListener("keydown", onKeyDown);
 
-	useOnClickOutside(formRef, disableEditing);
+	useOnClickOutside(formRef as RefObject<HTMLElement>, disableEditing);
 
 	return (
 		<div className="flex items-center justify-between pt-2 px-2 font-semibold gap-x-2 text-sm">

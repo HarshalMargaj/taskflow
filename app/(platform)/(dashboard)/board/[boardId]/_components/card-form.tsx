@@ -9,10 +9,12 @@ import {
 	useActionState,
 	useRef,
 	KeyboardEventHandler,
+	RefObject,
 } from "react";
 import { useParams } from "next/navigation";
 import { createCard } from "@/actions/createCard";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { State } from "@/actions/createCard";
 
 interface CardFormProps {
 	listId: string;
@@ -26,8 +28,12 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
 		const formRef = useRef<HTMLFormElement>(null);
 		const params = useParams();
 		const boardId = params.boardId;
-		const initialState = { message: null, errors: {} };
-		const [state, dispatch] = useActionState(createCard, initialState);
+
+		const initialState: State = { message: null, errors: {} };
+		const [state, dispatch] = useActionState<State, FormData>(
+			createCard,
+			initialState
+		);
 
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "escape") {
@@ -44,7 +50,7 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
 			}
 		};
 
-		useOnClickOutside(formRef, disableEditing);
+		useOnClickOutside(formRef as RefObject<HTMLElement>, disableEditing);
 		useEventListener("keydown", onKeyDown);
 
 		if (isEditing) {

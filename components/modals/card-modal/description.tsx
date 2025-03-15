@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AlignLeft } from "lucide-react";
 
 import { useParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 
@@ -61,7 +61,7 @@ export const Description = ({ data }: DescriptionProps) => {
 	};
 
 	useEventListener("keydown", onKeyDown);
-	useOnClickOutside(formRef, disableEditing);
+	useOnClickOutside(formRef as RefObject<HTMLElement>, disableEditing);
 
 	return (
 		<div className="flex items-start gap-x-3 w-full">

@@ -1,13 +1,10 @@
 "use server";
 
 import { z } from "zod";
-
 import { db } from "@/lib/db";
 import { createAuditLog } from "@/lib/create-audit-log";
-
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export type State = {
@@ -17,15 +14,18 @@ export type State = {
 	message?: string | null;
 };
 
-const CreateCard = z.object({
-	title: z.string().min(3, {
-		message: "Minimum length of 3 letters is required",
-	}),
+const CreateCardSchema = z.object({
+	title: z
+		.string()
+		.min(3, { message: "Minimum length of 3 letters is required" }),
 	boardId: z.string(),
 	listId: z.string(),
 });
 
-export async function createCard(prevState: State, formData: FormData) {
+export async function createCard(
+	prevState: State,
+	formData: FormData
+): Promise<State> {
 	const { orgId } = await auth(); // Gets the actively selected organization ID
 	const user = await currentUser();
 
@@ -37,7 +37,7 @@ export async function createCard(prevState: State, formData: FormData) {
 		return { message: "No organization selected" };
 	}
 
-	const validatedFields = CreateCard.safeParse({
+	const validatedFields = CreateCardSchema.safeParse({
 		title: formData.get("title"),
 		boardId: formData.get("boardId"),
 		listId: formData.get("listId"),
@@ -52,9 +52,8 @@ export async function createCard(prevState: State, formData: FormData) {
 
 	const { title, boardId, listId } = validatedFields.data;
 
-	let card;
-
 	try {
+		// Ensure the list exists and belongs to the organization
 		const list = await db.list.findUnique({
 			where: {
 				id: listId,
@@ -66,23 +65,21 @@ export async function createCard(prevState: State, formData: FormData) {
 
 		if (!list) {
 			return {
-				error: "List not found",
+				message: "List not found",
 			};
 		}
 
+		// Find the last card order to determine new order
 		const lastCard = await db.card.findFirst({
-			where: {
-				listId,
-			},
-			orderBy: {
-				order: "desc",
-			},
+			where: { listId },
+			orderBy: { order: "desc" },
 			select: { order: true },
 		});
 
 		const newOrder = lastCard ? lastCard.order + 1 : 1;
 
-		card = await db.card.create({
+		// Create the new card
+		const card = await db.card.create({
 			data: {
 				title,
 				listId,
@@ -90,6 +87,7 @@ export async function createCard(prevState: State, formData: FormData) {
 			},
 		});
 
+		// Create audit log
 		await createAuditLog({
 			entityId: card.id,
 			entityType: ENTITY_TYPE.CARD,
@@ -97,11 +95,16 @@ export async function createCard(prevState: State, formData: FormData) {
 			action: ACTION.CREATE,
 		});
 
+		// Revalidate cache
 		revalidatePath(`/board/${boardId}`);
+
+		return {
+			message: "Card created successfully!",
+		};
 	} catch (error) {
 		console.error("Database error:", error);
 		return {
-			message: "Database error",
+			message: "Database error occurred. Please try again.",
 		};
 	}
 }

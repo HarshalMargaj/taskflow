@@ -1,9 +1,7 @@
 "use server";
 
 import { z } from "zod";
-
 import { db } from "@/lib/db";
-
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { createAuditLog } from "@/lib/create-audit-log";
@@ -23,8 +21,11 @@ const CreateList = z.object({
 	boardId: z.string(),
 });
 
-export async function createList(prevState: State, formData: FormData) {
-	const { orgId } = await auth(); // Gets the actively selected organization ID
+export async function createList(
+	prevState: State,
+	formData: FormData
+): Promise<State> {
+	const { orgId } = await auth();
 	const user = await currentUser();
 
 	if (!user) {
@@ -49,29 +50,19 @@ export async function createList(prevState: State, formData: FormData) {
 
 	const { title, boardId } = validatedFields.data;
 
-	let list;
-
 	try {
-		// find board
+		// Find board
 		const board = await db.boardsTable.findUnique({
-			where: {
-				id: boardId,
-				orgId,
-			},
+			where: { id: boardId, orgId },
 		});
 
-		// if not board
-
-		if (!boardId) {
-			return {
-				error: "Board not found",
-			};
+		// If board is not found
+		if (!board) {
+			return { message: "Board not found" };
 		}
 
 		const lastList = await db.list.findFirst({
-			where: {
-				boardId: boardId,
-			},
+			where: { boardId },
 			orderBy: { order: "desc" },
 			select: { order: true },
 		});
@@ -79,11 +70,7 @@ export async function createList(prevState: State, formData: FormData) {
 		const newOrder = lastList ? lastList.order + 1 : 1;
 
 		const list = await db.list.create({
-			data: {
-				title,
-				boardId,
-				order: newOrder,
-			},
+			data: { title, boardId, order: newOrder },
 		});
 
 		await createAuditLog({
@@ -94,10 +81,11 @@ export async function createList(prevState: State, formData: FormData) {
 		});
 
 		revalidatePath(`/board/${boardId}`);
+
+		// Return success message
+		return { message: "List created successfully" };
 	} catch (error) {
 		console.error("Database error:", error);
-		return {
-			message: "Database error",
-		};
+		return { message: "Database error" };
 	}
 }

@@ -1,9 +1,7 @@
 "use server";
 
 import { z } from "zod";
-
 import { db } from "@/lib/db";
-
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { createAuditLog } from "@/lib/create-audit-log";
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
@@ -13,8 +11,10 @@ import { checkSubscription } from "@/lib/subscription";
 export type State = {
 	errors?: {
 		title?: string[];
+		image?: string[];
 	};
 	message?: string | null;
+	boardId?: string;
 };
 
 const CreateBoard = z.object({
@@ -27,7 +27,10 @@ const CreateBoard = z.object({
 	}),
 });
 
-export async function create(prevState: State, formData: FormData) {
+export async function create(
+	prevState: State,
+	formData: FormData
+): Promise<State> {
 	const { orgId } = await auth();
 	const user = await currentUser();
 
@@ -63,20 +66,17 @@ export async function create(prevState: State, formData: FormData) {
 
 	const { title, image } = validatedFields.data;
 
-	const [imageId, imageThumbUrl, imageFullUrl, imageLinkHtml, imageUserName] =
-		image.split("|");
+	const imageParts = image.split("|");
 
-	if (
-		!imageId ||
-		!imageThumbUrl ||
-		!imageFullUrl ||
-		!imageLinkHtml ||
-		!imageUserName
-	) {
+	if (imageParts.length !== 5) {
 		return {
-			error: "Missing fields. Failed to create board",
+			errors: { image: ["Invalid image format."] },
+			message: "Invalid image data",
 		};
 	}
+
+	const [imageId, imageThumbUrl, imageFullUrl, imageLinkHtml, imageUserName] =
+		imageParts;
 
 	try {
 		const newBoard = await db.boardsTable.create({

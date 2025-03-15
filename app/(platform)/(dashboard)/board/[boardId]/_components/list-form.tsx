@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 import { Plus, X } from "lucide-react";
 
-import { useState, useRef } from "react";
+import { useState, useRef, RefObject } from "react";
 import { useActionState } from "react";
 import { useParams } from "next/navigation";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
@@ -41,7 +41,8 @@ export const ListForm = () => {
 	};
 
 	useEventListener("keydown", onKeyDown);
-	useOnClickOutside(formRef, disableEditing);
+
+	useOnClickOutside(formRef as RefObject<HTMLElement>, disableEditing);
 
 	if (isEditing) {
 		return (

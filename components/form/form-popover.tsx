@@ -40,13 +40,12 @@ export const FormPopover = ({
 	const router = useRouter();
 	const proModal = useProModal();
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
-		if (!state?.message) return; // Prevents empty toast on reload
+		if (!state?.message) return;
 
 		if (state.message === "Board created successfully") {
 			toast.success("Board Created!");
-			// closing popover on create
+
 			closeRef?.current?.click();
 			if (state.boardId) {
 				router.push(`/board/${state.boardId}`);
